@@ -19,7 +19,7 @@ def create_daily_dataframe(api_response):
     
     possible_columns = [
         "time",
-        "weather_code",
+        "weathercode",
         "temperature_2m_mean",
         "temperature_2m_max",
         "temperature_2m_min",
