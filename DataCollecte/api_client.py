@@ -64,21 +64,27 @@ def get_historical_same_day_last_year(geolocalisation, date_last_year):
     Returns:
         Réponse JSON de l'API contenant les données daily pour cette date
     """
-    try:
-        query_params = {
-            "latitude": geolocalisation["latitude"], 
-            "longitude": geolocalisation["longitude"], 
-            "start_date": date_last_year,
-            "end_date": date_last_year,
-            "daily": "precipitation_sum,sunshine_duration,shortwave_radiation_sum,wind_speed_10m_max,apparent_temperature_max,temperature_2m_min,temperature_2m_max,apparent_temperature_mean,temperature_2m_mean",
-            "timezone": geolocalisation["timezone"]
-        }
-        response = requests.get(HISTORICAL_API_URL, params=query_params)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Erreur lors de la connexion à l'API historical : {e}")
-        return None
+    params = {
+        "latitude": geolocalisation["latitude"],
+        "longitude": geolocalisation["longitude"],
+        "start_date": date_last_year,        # 'YYYY-MM-DD'
+        "end_date": date_last_year,          # cùng 1 ngày
+        "daily": ",".join([
+            "weathercode",
+            "temperature_2m_mean",
+            "temperature_2m_max",
+            "temperature_2m_min",
+            "apparent_temperature_mean",
+            "wind_speed_10m_max",
+            "sunshine_duration",
+            "precipitation_sum",
+            "shortwave_radiation_sum",
+        ]),
+        "timezone": geolocalisation["timezone"],
+    }
+    r = requests.get(HISTORICAL_API_URL, params=params, timeout=20)
+    r.raise_for_status()
+    return r.json()
 
 def get_daily_weather_data(geolocalisation, start_date, end_date):
     """
@@ -92,18 +98,28 @@ def get_daily_weather_data(geolocalisation, start_date, end_date):
     Returns:
         Réponse JSON de l'API contenant les données daily
     """
-    try:
-        query_params = {
-            "latitude": geolocalisation["latitude"], 
-            "longitude": geolocalisation["longitude"], 
-            "start_date": start_date,
-            "end_date": end_date,
-            "daily": "weather_code,temperature_2m_mean,temperature_2m_max,temperature_2m_min,apparent_temperature_mean,wind_speed_10m_max,sunshine_duration,precipitation_sum,shortwave_radiation_sum",
-            "timezone": geolocalisation["timezone"]
-        }
-        response = requests.get(HISTORICAL_API_URL, params=query_params)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Erreur lors de la connexion à l'API : {e}")
-        return None
+    params = {
+        "latitude": geolocalisation["latitude"],
+        "longitude": geolocalisation["longitude"],
+        "start_date": start_date,            # 'YYYY-MM-DD'
+        "end_date": end_date,                # 'YYYY-MM-DD'
+        "daily": ",".join([
+            "weathercode",
+            "temperature_2m_mean",
+            "temperature_2m_max",
+            "temperature_2m_min",
+            "apparent_temperature_mean",
+            "wind_speed_10m_max",
+            "sunshine_duration",
+            "precipitation_sum",
+            "shortwave_radiation_sum",
+        ]),
+        "timezone": geolocalisation["timezone"],
+    }
+    r = requests.get(HISTORICAL_API_URL, params=params, timeout=20)
+    r.raise_for_status()
+    return r.json()
+
+
+#print(r.url)
+#print(r.status_code, r.text[:400])
