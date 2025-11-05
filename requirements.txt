@@ -7,3 +7,7 @@ matplotlib
 requests
 python-dotenv
 streamlit
+pytest
+pytest-mock
+requests-mock
+freezegun

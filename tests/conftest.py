@@ -5,7 +5,6 @@ import pandas as pd
 import numpy as np
 import pytest
 
-# --- Alias modules for the imports (do refactor chưa đồng bộ)
 import core.interfaces as _ifaces
 import data.transformer as _transformer
 import services.weather_service as _weather_service
@@ -15,11 +14,8 @@ import data.transforms as _transforms
 import data.data_cleaning as _data_cleaning
 
 
-# --- Fixtures / helpers general
-
 @pytest.fixture
 def sample_daily_json():
-    """Giống schema daily của Open-Meteo (rút gọn)."""
     return {
         "daily": {
             "time": ["2024-10-01", "2024-10-02", "2024-10-03"],
@@ -38,10 +34,8 @@ def sample_daily_json():
 
 @pytest.fixture
 def multi_year_df():
-    """DataFrame tối thiểu cho forecast/PCA: ~2 năm ngày-ngày."""
     dates = pd.date_range("2023-01-01", "2024-12-31", freq="D")
     n = len(dates)
-    # Tạo dữ liệu synthetic có tính mùa vụ nhẹ
     t = np.arange(n)
     temp = 12 + 8*np.sin(2*np.pi*t/365.0) + np.random.RandomState(0).normal(0, 0.5, size=n)
     df = pd.DataFrame({
@@ -55,7 +49,6 @@ def multi_year_df():
     })
     return df
 
-# Fakes cho WeatherService unit test
 class _FakeGeocoder:
     def __init__(self, geoloc=None):
         self.geoloc = geoloc or {"latitude": 45.76, "longitude": 4.84, "timezone": "Europe/Paris"}
@@ -77,7 +70,6 @@ def fake_geocoder():
 
 @pytest.fixture
 def fake_provider(sample_daily_json):
-    # Dùng cùng một mẫu JSON cho cả 3 đường dẫn để đơn giản
     return _FakeWeatherProvider(
         today_json=sample_daily_json,
         range_json=sample_daily_json,
