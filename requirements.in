@@ -1,0 +1,9 @@
+numpy>=1.26
+pandas>=2.2
+scipy
+scikit-learn
+statsmodels
+matplotlib
+requests
+python-dotenv
+streamlit
